@@ -1,12 +1,10 @@
 // ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables
 
-import 'dart:developer';
-
 import 'package:clima_flutter_examples/utilities/const.dart';
 import 'package:flutter/material.dart';
 
 class Locationscreen extends StatefulWidget {
-  final locationweather;
+  final dynamic locationweather;
   const Locationscreen({
     super.key,
     this.locationweather,
