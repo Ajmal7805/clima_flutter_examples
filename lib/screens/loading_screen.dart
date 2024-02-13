@@ -1,9 +1,11 @@
 // ignore_for_file: prefer_const_constructors
 
-import 'dart:developer';
-
+import 'package:clima_flutter_examples/screens/locationscreen.dart';
+import 'package:clima_flutter_examples/utilities/const.dart';
+import 'package:clima_flutter_examples/services/location.dart';
+import 'package:clima_flutter_examples/services/networking.dart';
 import 'package:flutter/material.dart';
-import 'package:geolocator/geolocator.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 
 class LoadingScreen extends StatefulWidget {
   const LoadingScreen({super.key});
@@ -16,61 +18,43 @@ class _LoadingScreenState extends State<LoadingScreen> {
   @override
   void initState() {
     super.initState();
-    getlocation();
+    getlocationdata();
   }
+
+  double? latitude;
+  double? lontitude;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Center(
-          child: ElevatedButton(
-        //Get the current location
-        onPressed: () {
-          getlocation();
-        },
-        child: Text('Get Location'),
+          child: SpinKitCircle(
+        color: Colors.red,
+        size: 60.0,
       )),
     );
   }
 
-  //to get current location
-  Future<void> getlocation() async {
-    //check location permission true or false
-    LocationPermission locationPermission = await Geolocator.checkPermission();
-    //if permission is false go to _showdeniedpopup()
-    if (locationPermission == LocationPermission.denied) {
-      LocationPermission permission = await Geolocator.requestPermission();
-      if (permission == LocationPermission.denied) {
-        return _showdeniedpopup();
+  Future<void> getlocationdata() async {
+    Locations locations = Locations();
+    await locations.getcurrentlocation(context);
+
+    latitude = locations.lantitude;
+    lontitude = locations.lontitude;
+    if (latitude != null && lontitude != null) {
+      Networkinghelper networkinghelper = Networkinghelper(
+          'https://api.openweathermap.org/data/2.5/weather?lat=$latitude&lon=$lontitude&appid=$apikeys&units=metric');
+      var weatherdata = await networkinghelper.getdata();
+
+      if (mounted) {
+        Navigator.push(context, MaterialPageRoute(
+          builder: (context) {
+            return Locationscreen(
+              locationweather: weatherdata,
+            );
+          },
+        ));
       }
     }
-    //when permission is true, get lantitude and lontitude of the current space
-    Position position = await Geolocator.getCurrentPosition(
-        desiredAccuracy: LocationAccuracy.low);
-    log('current location $position');
-  }
-
-  //pop up to show when the user is clicked denied access
-  Future<void> _showdeniedpopup() async {
-    return showDialog<void>(
-      context: context,
-      barrierDismissible: false, // user must tap button!
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title:
-              Align(alignment: Alignment.topCenter, child: const Text('Sorry')),
-          content: Text(
-              "You don't have permission to go foward ,If you want to go forward definitly you enable allow button"),
-          actions: <Widget>[
-            TextButton(
-              child: const Text('Approve'),
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-            ),
-          ],
-        );
-      },
-    );
   }
 }

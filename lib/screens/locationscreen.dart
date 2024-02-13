@@ -1,16 +1,38 @@
 // ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables
 
-import 'package:clima_flutter_examples/screens/utilities/const.dart';
+import 'dart:developer';
+
+import 'package:clima_flutter_examples/utilities/const.dart';
 import 'package:flutter/material.dart';
 
 class Locationscreen extends StatefulWidget {
-  const Locationscreen({super.key});
+  final locationweather;
+  const Locationscreen({
+    super.key,
+    this.locationweather,
+  });
 
   @override
   State<Locationscreen> createState() => _LocationscreenState();
 }
 
 class _LocationscreenState extends State<Locationscreen> {
+  int? temparature;
+  int? weatherid;
+  String? cityname;
+  @override
+  void initState() {
+    super.initState();
+    updateui(widget.locationweather);
+  }
+
+  void updateui(dynamic weatherdata) {
+    double temp = weatherdata['main']['temp'];
+    temparature = temp.toInt();
+    weatherid = weatherdata['weather'][0]['id'];
+    cityname = weatherdata['name'];
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -53,7 +75,7 @@ class _LocationscreenState extends State<Locationscreen> {
                 child: Row(
                   children: <Widget>[
                     Text(
-                      '32°',
+                      '$temparature°',
                       style: kTempTextStyle,
                     ),
                     Text(

@@ -1,6 +1,6 @@
 // ignore_for_file: prefer_const_constructors
 
-import 'package:clima_flutter_examples/screens/utilities/const.dart';
+import 'package:clima_flutter_examples/utilities/const.dart';
 import 'package:flutter/material.dart';
 
 class CityScreen extends StatefulWidget {
