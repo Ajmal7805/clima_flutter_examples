@@ -1,5 +1,4 @@
 // ignore_for_file: prefer_const_constructors
-
 import 'package:clima_flutter_examples/utilities/const.dart';
 import 'package:flutter/material.dart';
 
@@ -11,6 +10,7 @@ class CityScreen extends StatefulWidget {
 }
 
 class _CityScreenState extends State<CityScreen> {
+  String? cityname;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -25,21 +25,34 @@ class _CityScreenState extends State<CityScreen> {
         child: SafeArea(
           child: Column(
             children: <Widget>[
-              Align(
-                  alignment: Alignment.topLeft,
-                  child: ElevatedButton(
-                    onPressed: () {},
-                    child: Icon(
-                      Icons.arrow_back_ios,
-                      size: 50.0,
-                    ),
-                  )),
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Align(
+                    alignment: Alignment.topLeft,
+                    child: IconButton(
+                      onPressed: () {
+                        Navigator.pop(context);
+                      },
+                      icon: Icon(
+                        Icons.arrow_back_ios,
+                        size: 30.0,
+                        color: Colors.white,
+                      ),
+                    )),
+              ),
               Container(
                 padding: EdgeInsets.all(20.0),
-                child: null,
+                child: TextField(
+                    onChanged: (value) {
+                      cityname = value;
+                    },
+                    style: TextStyle(color: Colors.black),
+                    decoration: textfieldinputdecoration),
               ),
-              ElevatedButton(
-                onPressed: () {},
+              TextButton(
+                onPressed: () {
+                  Navigator.pop(context, cityname);
+                },
                 child: Text(
                   'Get Weather',
                   style: kButtonTextStyle,
